@@ -4,7 +4,22 @@ std::ostream &operator<<(std::ostream &os, const SysEvent &event) {
     if (event.id == SysEvent::EVENT_13_ERROR)
         os << *event.time.get() << " " << event.id << " " << event.msgError << std::endl;
 
+    else if (event.id == SysEvent::EVENT_12_SIT_DOWN)
+        os << *event.time.get() << " " << event.id << " " << event.client << " " << event.table << std::endl;
+
+    else if (event.id == SysEvent::EVENT_11_KICKED_OUT)
+        os << *event.time.get() << " " << event.id << " " << event.client << std::endl;
+
     else if (event.id == SysEvent::EVENT_1_CAME)
+        os << *event.time.get() << " " << event.id << " " << event.client << std::endl;
+
+    else if (event.id == SysEvent::EVENT_2_CHANGE_SEAT)
+        os << *event.time.get() << " " << event.id << " " << event.client << " " << event.table << std::endl;
+
+    else if (event.id == SysEvent::EVENT_3_WAIT)
+        os << *event.time.get() << " " << event.id << " " << event.client << std::endl;
+
+    else if (event.id == SysEvent::EVENT_4_GONE)
         os << *event.time.get() << " " << event.id << " " << event.client << std::endl;
 
     else

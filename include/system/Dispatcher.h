@@ -9,6 +9,7 @@
 #include <sstream>
 #include <fstream>
 #include <map>
+#include <queue>
 
 
 #include "SysEvent.h"
@@ -49,6 +50,10 @@ private:
 
     void kickOutVisitors();
 
+    std::shared_ptr<Client> getClientByEvent(std::shared_ptr<SysEvent> pEvent);
+
+    std::vector<int> getIdOfFreeTables();
+
     int numberOfTables;
     int price;
     std::shared_ptr<Time> tBegin;
@@ -57,9 +62,20 @@ private:
     std::list<std::shared_ptr<SysEvent>> events;
     std::list<std::shared_ptr<Client>> clients;
     std::map<int, std::shared_ptr<Client>> tables;
+    std::list<std::shared_ptr<Client>> waitList;
 
-    static inline const std::vector<int> ids = {1, 2, 3, 4, 11, 12, 13};
+
+
+    static inline const std::vector<int> ids = {SysEvent::EVENT_1_CAME,
+                                                SysEvent::EVENT_2_CHANGE_SEAT,
+                                                SysEvent::EVENT_3_WAIT,
+                                                SysEvent::EVENT_4_GONE,
+                                                SysEvent::EVENT_11_KICKED_OUT,
+                                                SysEvent::EVENT_12_SIT_DOWN,
+                                                SysEvent::EVENT_13_ERROR};
     // нарушить правило одного определения, линковщик заркывает глаза
+
+
 };
 
 #endif
