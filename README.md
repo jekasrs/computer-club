@@ -1,5 +1,5 @@
 ## computer-club
-####_Supervisor for a computer club  
+#### Supervisor for a computer club  
 
 ### Компиляция и сборка  
     mkdir build
