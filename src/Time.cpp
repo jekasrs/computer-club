@@ -42,3 +42,11 @@ bool Time::operator<(const Time &rhs) const noexcept {
 bool Time::operator==(const Time &rhs) const noexcept {
     return !((*this) < rhs) && !((*this) > rhs);
 }
+
+void Time::setHours(int hours) {
+    Time::hours = hours;
+}
+
+void Time::setMinutes(int minutes) {
+    Time::minutes = minutes;
+}

@@ -24,8 +24,6 @@ public:
     static inline constexpr auto NOT_FOUND_TABLE_EVENT = " не найден в допустимых идентификаторах столов";
 
     static inline constexpr auto OUT_OF_RANGE_TIME_EXCEPTION = "Время события вне времени работы клуба";
-
-
 };
 
 #endif

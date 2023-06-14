@@ -10,6 +10,9 @@ public:
     int getHours() const noexcept;
     int getMinutes() const noexcept;
 
+    void setHours(int hours);
+    void setMinutes(int minutes);
+
     friend std::ostream &operator<<(std::ostream &os, const Time &time);
 
     bool operator>(const Time &rhs) const noexcept;
