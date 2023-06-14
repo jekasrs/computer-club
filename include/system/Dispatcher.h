@@ -11,7 +11,6 @@
 #include <map>
 #include <queue>
 
-
 #include "SysEvent.h"
 #include "../FormatException.h"
 #include "../objects/Time.h"
@@ -46,11 +45,11 @@ private:
     std::vector<std::string> getAttributesOfEventStrings(const std::string &line) const;
 
     /** Загрузить Event в диспетчер и получить выходну реакцию, если возможно" **/
-    void feed(std::shared_ptr<SysEvent> pEvent);
+    void feed(std::shared_ptr<SysEvent>& pEvent);
 
-    void kickOutVisitors();
+    void kickOutAllVisitors();
 
-    std::shared_ptr<Client> getClientByEvent(std::shared_ptr<SysEvent> pEvent);
+    std::shared_ptr<Client> getClientByEvent(std::shared_ptr<SysEvent>& pEvent);
 
     std::vector<int> getIdOfFreeTables();
 
@@ -63,8 +62,6 @@ private:
     std::list<std::shared_ptr<Client>> clients;
     std::map<int, std::shared_ptr<Client>> tables;
     std::list<std::shared_ptr<Client>> waitList;
-
-
 
     static inline const std::vector<int> ids = {SysEvent::EVENT_1_CAME,
                                                 SysEvent::EVENT_2_CHANGE_SEAT,

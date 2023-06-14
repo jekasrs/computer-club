@@ -2,11 +2,11 @@
 
 Time::Time(int hours, int minutes) : hours(hours), minutes(minutes) {}
 
-int Time::getHours() const {
+int Time::getHours() const noexcept {
     return hours;
 }
 
-int Time::getMinutes() const {
+int Time::getMinutes() const noexcept {
     return minutes;
 }
 
@@ -15,28 +15,30 @@ std::ostream &operator<<(std::ostream &os, const Time &time) {
     return os;
 }
 
-bool Time::operator>(const Time &rhs) const {
+bool Time::operator>(const Time &rhs) const noexcept {
     if (hours == rhs.hours) {
-        if (minutes == rhs.minutes)
-            return false;
-        else
+        if (minutes != rhs.minutes) {
             return minutes > rhs.minutes;
-    }
-    else
-        return hours > rhs.hours;
-}
-
-bool Time::operator<(const Time &rhs) const {
-    if (hours == rhs.hours) {
-        if (minutes == rhs.minutes)
+        } else {
             return false;
-        else
-            return minutes < rhs.minutes;
+        }
+    } else {
+        return hours > rhs.hours;
     }
-    else
-        return hours < rhs.hours;
 }
 
-bool Time::operator==(const Time &rhs) const {
+bool Time::operator<(const Time &rhs) const noexcept {
+    if (hours == rhs.hours) {
+        if (minutes != rhs.minutes) {
+            return minutes < rhs.minutes;
+        } else {
+            return false;
+        }
+    } else {
+        return hours < rhs.hours;
+    }
+}
+
+bool Time::operator==(const Time &rhs) const noexcept {
     return !((*this) < rhs) && !((*this) > rhs);
 }

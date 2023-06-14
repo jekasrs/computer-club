@@ -22,4 +22,4 @@ public:
 
 };
 
-#endif //MY_SYSTEM_FORMATEXCEPTIONDEFINE_H
+#endif

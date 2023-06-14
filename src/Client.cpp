@@ -1,27 +1,19 @@
 #include "../include/objects/Client.h"
 
-Client::Client(const std::string &name) : name(name) {}
+Client::Client(const std::string &name) noexcept : name(name) {}
 
-const std::string &Client::getName() const {
+const std::string &Client::getName() const noexcept{
     return name;
 }
 
-void Client::setName(const std::string &name) {
-    Client::name = name;
-}
-
-bool Client::isHere() const {
+bool Client::isHere() const noexcept {
     return isInHere;
 }
 
-void Client::setIsHere(bool isHere) {
+void Client::setIsHere(bool isHere) noexcept {
     isInHere = isHere;
 }
 
-const std::shared_ptr<SysEvent>& Client::getCurrentEvent() const {
-    return currentEvent;
-}
-
-void Client::setCurrentEvent(const SysEvent &event) {
-    Client::currentEvent = std::make_unique<SysEvent>(event);
+bool Client::compareByName(const std::shared_ptr<Client>& c1, const std::shared_ptr<Client>& c2) {
+    return c1->getName() < c2->getName();
 }

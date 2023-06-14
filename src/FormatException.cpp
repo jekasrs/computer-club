@@ -4,7 +4,7 @@ const char *FormatException::what() const noexcept {
     return msg.c_str();
 }
 
-std::string FormatException::getInfo() const noexcept {
+const std::string& FormatException::getInfo() const noexcept {
     return info;
 }
 
@@ -12,7 +12,7 @@ int FormatException::getLineNumber() const noexcept {
     return lineNumber;
 }
 
-std::string FormatException::getLine() const noexcept {
+const std::string& FormatException::getLine() const noexcept {
     return line;
 }
 

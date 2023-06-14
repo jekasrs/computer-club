@@ -3,8 +3,17 @@ project(my_system)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(my_system main.cpp
-        src/Time.cpp
-        include/objects/Time.h src/Dispatcher.cpp
+add_executable(my_system
+        main.cpp
+        include/objects/Time.h
+        include/objects/Client.h
+        include/FormatExceptionDefine.h
+        include/FormatException.h
+        include/system/SysEventExceptions.h
+        include/system/SysEvent.h
         include/system/Dispatcher.h
-        include/FormatException.h src/FormatException.cpp src/SysEvent.cpp include/system/SysEvent.h src/Client.cpp include/objects/Client.h include/FormatExceptionDefine.h include/system/SysEventExceptions.h)
+        src/Time.cpp
+        src/Client.cpp
+        src/FormatException.cpp
+        src/SysEvent.cpp
+        src/Dispatcher.cpp)

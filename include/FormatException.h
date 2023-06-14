@@ -16,8 +16,8 @@ public:
     const char *what() const noexcept override;
 
     int getLineNumber() const noexcept;
-    std::string getLine() const noexcept;
-    std::string getInfo() const noexcept;
+    const std::string& getLine() const noexcept;
+    const std::string& getInfo() const noexcept;
 
 private:
     int lineNumber;

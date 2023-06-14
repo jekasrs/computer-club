@@ -6,24 +6,19 @@
 
 class Client {
 public:
-    Client(const std::string &name);
+    explicit Client(const std::string &name) noexcept;
 
-    const std::string &getName() const;
+    const std::string &getName() const noexcept;
 
-    void setName(const std::string &name);
+    bool isHere() const noexcept;
 
-    bool isHere() const;
+    void setIsHere(bool isHere) noexcept;
 
-    void setIsHere(bool isHere);
-
-    const std::shared_ptr<SysEvent>& getCurrentEvent() const;
-
-    void setCurrentEvent(const SysEvent &event);
+    static bool compareByName(const std::shared_ptr<Client> &c1, const std::shared_ptr<Client> &c2);
 
 private:
-    std::string name;
+    const std::string name;
     bool isInHere;
-    std::shared_ptr<SysEvent> currentEvent;
 
 };
 

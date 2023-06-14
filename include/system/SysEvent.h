@@ -16,8 +16,8 @@ public:
     int getId() const;
     void setId(int id);
 
-    const std::string &getClient() const;
-    void setClient(const std::string &client);
+    const std::string &getClientName() const;
+    void setClientName(const std::string &clientName);
 
     int getTable() const;
     void setTable(int table);
@@ -44,7 +44,7 @@ public:
 private:
     int id;
     std::shared_ptr<Time> time;
-    std::string client;
+    std::string clientName;
     int table;
 
     std::string msgError;

@@ -7,18 +7,18 @@
 class Time {
 public:
     Time(int hours, int minutes);
-    int getHours() const;
-    int getMinutes() const;
+    int getHours() const noexcept;
+    int getMinutes() const noexcept;
 
     friend std::ostream &operator<<(std::ostream &os, const Time &time);
 
-    bool operator>(const Time &rhs) const;
-    bool operator<(const Time &rhs) const;
-    bool operator==(const Time &rhs) const;
+    bool operator>(const Time &rhs) const noexcept;
+    bool operator<(const Time &rhs) const noexcept;
+    bool operator==(const Time &rhs) const noexcept;
 
 private:
-    const int hours;
-    const int minutes;
+    int hours;
+    int minutes;
 };
 
 #endif
