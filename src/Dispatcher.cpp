@@ -1,12 +1,6 @@
 #include "../include/system/Dispatcher.h"
 
 Dispatcher::Dispatcher(std::ifstream& file) {
-
-    if (!file.is_open()) {
-        file.close();
-        std::cout << "Unable to open file" << std::endl;
-    }
-
     std::string line;
     int counterLine = 0;
 
@@ -16,7 +10,13 @@ Dispatcher::Dispatcher(std::ifstream& file) {
         // 1. numberOfTables :
         std::getline(file, line);
         counterLine++;
-        numberOfTables = getNumber(line);
+        int num = getNumber(line);
+        if (num > 0) {
+            numberOfTables = num;
+        }
+        else {
+            throw FormatException(FormatExceptionDefine::INVALID_VALUE_ZERO);
+        }
 
         // 2. tBegin, tEnd :
         std::getline(file, line);
@@ -30,20 +30,26 @@ Dispatcher::Dispatcher(std::ifstream& file) {
         }
 
         if (words.size() > 2) {
-            throw FormatException(FormatExceptionDefine::TIME_SPACE_EXCEPTION);
+            throw FormatException(FormatExceptionDefine::TIME_FORMAT_SPACE_EXCEPTION);
         }
 
         tBegin = getTime(words[0]);
         tEnd = getTime(words[1]);
 
-        if (!(*tEnd > *tBegin)) {
+        if ((*tEnd == *tBegin)) {
             throw FormatException(FormatExceptionDefine::INVALID_TIME_RANGE);
         }
 
         // 3. price :
         std::getline(file, line);
         counterLine++;
-        price = getNumber(line);
+        int money = getNumber(line);
+        if (money > 0){
+            price = money;
+        }
+        else{
+            throw FormatException(FormatExceptionDefine::INVALID_VALUE_ZERO);
+        }
 
         for(int i = 1; i <= numberOfTables; ++i) {
             tables.insert(std::make_pair(i, std::shared_ptr<Client>()));
@@ -63,6 +69,9 @@ Dispatcher::Dispatcher(std::ifstream& file) {
         std::shared_ptr<SysEvent> sysEvent;
 
         auto time = getTime(attributes[0]);
+        if ((*time > *tEnd) && (*time < *tBegin)) {
+            throw FormatException(FormatExceptionDefine::OUT_OF_RANGE_TIME_EXCEPTION);
+        }
         Time *lastTime = time.get();
         int id = getNumber(attributes[1]);
         if (!checkIdEvent(id)) {
@@ -70,7 +79,7 @@ Dispatcher::Dispatcher(std::ifstream& file) {
         }
         std::string client = attributes[2];
         if (!checkClientName(attributes[2])) {
-            throw FormatException(attributes[2] + FormatExceptionDefine::INVALID_CLIENT_NAME);
+            throw FormatException(attributes[2] + FormatExceptionDefine::NAME_FORMAT_EXCEPTION);
         }
         if (id == SysEvent::EVENT_2_CHANGE_SEAT) {
             int table = getNumber(attributes[3]);
@@ -83,16 +92,18 @@ Dispatcher::Dispatcher(std::ifstream& file) {
             sysEvent = std::make_shared<SysEvent>(SysEvent(id, time, client));
         }
         this->feed(sysEvent);
-        while (std::getline(file, line)) {
+        while (!file.eof()) {
+            std::getline(file, line);
             counterLine++;
             attributes = getAttributesOfEventStrings(line);
             time = getTime(attributes[0]);
+
             if (*lastTime > *time) {
-                throw FormatException(FormatExceptionDefine::TIMELINE_INVALID_ORDER);
+                throw FormatException(FormatExceptionDefine::INVALID_TIME_ORDER);
             }
 
-            if ((*time > *tEnd) || (*time < *tBegin)) {
-                throw FormatException(FormatExceptionDefine::TIMELINE_INVALID_ORDER);
+            if ((*time > *tEnd) && (*time < *tBegin)) {
+                throw FormatException(FormatExceptionDefine::OUT_OF_RANGE_TIME_EXCEPTION);
             }
             lastTime = time.get();
 
@@ -102,7 +113,7 @@ Dispatcher::Dispatcher(std::ifstream& file) {
             }
             client = attributes[2];
             if (!checkClientName(attributes[2])) {
-                throw FormatException(attributes[2] + FormatExceptionDefine::INVALID_CLIENT_NAME);
+                throw FormatException(attributes[2] + FormatExceptionDefine::NAME_FORMAT_EXCEPTION);
             }
             if (id != SysEvent::EVENT_2_CHANGE_SEAT) {
                 sysEvent = std::make_shared<SysEvent>(SysEvent(id, time, client));
@@ -119,7 +130,7 @@ Dispatcher::Dispatcher(std::ifstream& file) {
         // Убираем всех клиентов из клуба, кототые не ушли во время (до закрытия)
         kickOutAllVisitors();
     }
-    catch (FormatException &ex) {
+    catch (const FormatException &ex) {
         throw FormatException(counterLine, line, ex.getInfo());
     }
 }
@@ -129,14 +140,14 @@ int Dispatcher::getNumber(const std::string& number) const {
         for (char c: number) {
             if (!isdigit(c)) {
                 throw FormatException(
-                        std::string("\'" + std::string(1, c) + "\'" + FormatExceptionDefine::NOT_DIGIT_CHAR_EXCEPTION));
+                        std::string("\'" + std::string(1, c) + "\'" + FormatExceptionDefine::NUMBER_FORMAT_EXCEPTION));
             }
         }
         int N = std::stoi(number);
         return N;
     }
-    catch (std::invalid_argument const &ex) {
-        throw FormatException(number + FormatExceptionDefine::NOT_DIGIT_CHAR_EXCEPTION);
+    catch (const std::invalid_argument &ex) {
+        throw FormatException(number + FormatExceptionDefine::NUMBER_FORMAT_EXCEPTION);
     }
 }
 
@@ -227,10 +238,10 @@ std::vector<std::string> Dispatcher::getAttributesOfEventStrings(const std::stri
         attrs.push_back(attr);
 
     if (attrs.size() < 3 || attrs.size() > 4)
-        throw FormatException(FormatExceptionDefine::ATTR_SPACE_EXCEPTION + std::to_string(attrs.size()));
+        throw FormatException(FormatExceptionDefine::ATTR_FORMAT_SPACE_EXCEPTION + std::to_string(attrs.size()));
 
     if (attrs[1] == std::to_string(SysEvent::EVENT_2_CHANGE_SEAT) && attrs.size() != 4)
-        throw FormatException(FormatExceptionDefine::ATTR_NUMBER_EXCEPTION + std::to_string(attrs.size()));
+        throw FormatException(FormatExceptionDefine::ATTR_FROMAT_NUMBER_EXCEPTION + std::to_string(attrs.size()));
 
     return attrs;
 }
