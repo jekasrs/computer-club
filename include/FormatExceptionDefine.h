@@ -12,7 +12,7 @@ public:
     static inline constexpr auto TIME_FORMAT_H2_OUT_OF_RANGE = "Формат времени должен быть вида [XX]:XX, где [XX] - число (20, 21,.. 23)";
     static inline constexpr auto TIME_FORMAT_SPACE_EXCEPTION = "Временной промежуток должен содержать только один пробел";
     static inline constexpr auto NUMBER_FORMAT_EXCEPTION = " не является цифрой. Этот символ(ы) не могут находиться в числе";
-    static inline constexpr auto NAME_FORMAT_EXCEPTION = "Имя клиента должно содержать только [a-z], [0-9], -, _ ";
+    static inline constexpr auto NAME_FORMAT_EXCEPTION = " имя клиента должно содержать только [a-z], [0-9], -, _ ";
     static inline constexpr auto ATTR_FORMAT_SPACE_EXCEPTION = "Количество атрибутов в событии должно быть от 3 до 4. Найдено: ";
     static inline constexpr auto ATTR_FROMAT_NUMBER_EXCEPTION = "Для события 'клиент сел за стол' (2) должно быть установлено 4 атрибута. Найдено: ";
 
