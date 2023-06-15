@@ -7,18 +7,18 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    std::ifstream input_file(argv[1]);
-    if (!input_file.is_open()) {
+    std::ifstream inputFile(argv[1]);
+    if (!inputFile.is_open()) {
         std::cerr << "Ошибка при открытии файла. \n";
         return 1;
     }
     try {
-        Dispatcher dispatcher = Dispatcher(input_file);
+        Dispatcher dispatcher = Dispatcher(inputFile);
         dispatcher.showAllEvents();
 
-        input_file.close();
+        inputFile.close();
 
-        if (input_file.fail()) {
+        if (inputFile.fail()) {
             std::cerr << "Ошибка при закрытии файла. \n";
             return 1;
         }

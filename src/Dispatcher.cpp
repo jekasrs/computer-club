@@ -53,7 +53,7 @@ Dispatcher::Dispatcher(std::ifstream& file) {
 
         for(int i = 1; i <= numberOfTables; ++i) {
             tables.insert(std::make_pair(i, std::shared_ptr<Client>()));
-            tablesProfit.insert(std::make_pair(i, std::make_pair(0, std::make_shared<Time>(Time(0, 0)))));
+            tablesProfit.insert(std::make_pair(i, std::make_pair(0, std::make_shared<Time>(0, 0))));
         }
 
         events = std::list<std::shared_ptr<SysEvent>>();
@@ -87,10 +87,10 @@ Dispatcher::Dispatcher(std::ifstream& file) {
             if (!checkTableNumber(table)) {
                 throw FormatException(attributes[3] + FormatExceptionDefine::NOT_FOUND_TABLE_EVENT);
             }
-            sysEvent = std::make_shared<SysEvent>(SysEvent(id, time, client, table));
+            sysEvent = std::make_shared<SysEvent>(id, time, client, table);
         }
         else {
-            sysEvent = std::make_shared<SysEvent>(SysEvent(id, time, client));
+            sysEvent = std::make_shared<SysEvent>(id, time, client);
         }
         this->feed(sysEvent);
         while (!file.eof()) {
@@ -117,13 +117,13 @@ Dispatcher::Dispatcher(std::ifstream& file) {
                 throw FormatException(attributes[2] + FormatExceptionDefine::NAME_FORMAT_EXCEPTION);
             }
             if (id != SysEvent::EVENT_2_CHANGE_SEAT) {
-                sysEvent = std::make_shared<SysEvent>(SysEvent(id, time, client));
+                sysEvent = std::make_shared<SysEvent>(id, time, client);
             } else {
                 int table = getNumber(attributes[3]);
                 if (!checkTableNumber(table)) {
                     throw FormatException(attributes[3] + FormatExceptionDefine::NOT_FOUND_TABLE_EVENT);
                 }
-                sysEvent = std::make_shared<SysEvent>(SysEvent(id, time, client, table));
+                sysEvent = std::make_shared<SysEvent>(id, time, client, table);
             }
             this->feed(sysEvent);
         }
@@ -225,7 +225,7 @@ std::shared_ptr<Time> Dispatcher::getTime(const std::string& time) const {
     int h = std::stoi(hours);
     int m = std::stoi(minutes);
 
-    std::shared_ptr<Time> t = std::make_shared<Time>(Time(h,m));
+    std::shared_ptr<Time> t = std::make_shared<Time>(h,m);
     return t;
 }
 
@@ -272,7 +272,7 @@ void Dispatcher::feed(std::shared_ptr<SysEvent>& pEvent) {
         if ((*pEvent->getTime() > *tEnd) && (*pEvent->getTime() < *tBegin)) {
                 pEvent->setSpoiled(true);
                 auto error = std::make_shared<SysEvent>(
-                        SysEvent(SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::NOT_OPEN_YET, true));
+                        SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::NOT_OPEN_YET, true);
                 events.push_back(error);
                 removeClient(currentClient);
                 return;
@@ -282,7 +282,7 @@ void Dispatcher::feed(std::shared_ptr<SysEvent>& pEvent) {
         if (currentClient->isHere()) {
             pEvent->setSpoiled(true);
             auto error = std::make_shared<SysEvent>(
-                    SysEvent(SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::YOU_SHALL_NOT_PASS, true));
+                    SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::YOU_SHALL_NOT_PASS, true);
             events.push_back(error);
             return;
         }
@@ -296,7 +296,7 @@ void Dispatcher::feed(std::shared_ptr<SysEvent>& pEvent) {
         if (tables[pEvent.get()->getTable()] != nullptr) {
             pEvent->setSpoiled(true);
             auto error = std::make_shared<SysEvent>(
-                    SysEvent(SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::PLACE_IS_BUSY, true));
+                    SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::PLACE_IS_BUSY, true);
             events.push_back(error);
             return;
         }
@@ -305,7 +305,7 @@ void Dispatcher::feed(std::shared_ptr<SysEvent>& pEvent) {
         if (!currentClient->isHere()) {
             pEvent->setSpoiled(true);
             auto error = std::make_shared<SysEvent>(
-                    SysEvent(SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::CLIENT_UNKNOWN, true));
+                    SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::CLIENT_UNKNOWN, true);
             events.push_back(error);
             return;
         }
@@ -334,7 +334,7 @@ void Dispatcher::feed(std::shared_ptr<SysEvent>& pEvent) {
         if (!currentClient->isHere()) {
             pEvent->setSpoiled(true);
             auto error = std::make_shared<SysEvent>(
-                    SysEvent(SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::CLIENT_UNKNOWN, true));
+                    SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::CLIENT_UNKNOWN, true);
             events.push_back(error);
             return;
         }
@@ -344,7 +344,7 @@ void Dispatcher::feed(std::shared_ptr<SysEvent>& pEvent) {
         if (foundFreeTables.size() > 0) {
             pEvent->setSpoiled(true);
             auto error = std::make_shared<SysEvent>(
-                    SysEvent(SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::I_CAN_WAIT_NO_LONGER, true));
+                    SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::I_CAN_WAIT_NO_LONGER, true);
             events.push_back(error);
             return;
         }
@@ -354,7 +354,7 @@ void Dispatcher::feed(std::shared_ptr<SysEvent>& pEvent) {
             // генерируем исходящее событие: EVENT_11_KICKED_OUT
             pEvent->setSpoiled(true);
             auto outEvent = std::make_shared<SysEvent>(
-                    SysEvent(SysEvent::EVENT_11_KICKED_OUT, pEvent->getTime(), currentClient->getName()));
+                    SysEvent::EVENT_11_KICKED_OUT, pEvent->getTime(), currentClient->getName());
             events.push_back(outEvent);
             removeClient(currentClient);
             return;
@@ -368,7 +368,7 @@ void Dispatcher::feed(std::shared_ptr<SysEvent>& pEvent) {
         if (!currentClient->isHere()) {
             pEvent->setSpoiled(true);
             auto error = std::make_shared<SysEvent>(
-                    SysEvent(SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::CLIENT_UNKNOWN, true));
+                    SysEvent::EVENT_13_ERROR, pEvent->getTime(), SysEventException::CLIENT_UNKNOWN, true);
             events.push_back(error);
             return;
         }
@@ -391,7 +391,7 @@ void Dispatcher::feed(std::shared_ptr<SysEvent>& pEvent) {
         if (!waitList.empty()) {
             auto client = waitList.front();
 
-            auto outEvent = std::make_shared<SysEvent>(SysEvent(SysEvent::EVENT_12_SIT_DOWN, pEvent->getTime(), client->getName(), foundTable));
+            auto outEvent = std::make_shared<SysEvent>(SysEvent::EVENT_12_SIT_DOWN, pEvent->getTime(), client->getName(), foundTable);
 
             tables[foundTable] = client;
             waitList.remove(client);
@@ -414,7 +414,7 @@ void Dispatcher::kickOutAllVisitors() {
     for (auto client : clients) {
         if (client->isHere()) {
             auto outEvent = std::make_shared<SysEvent>(
-                    SysEvent(SysEvent::EVENT_11_KICKED_OUT, tEnd, client->getName()));
+                    SysEvent::EVENT_11_KICKED_OUT, tEnd, client->getName());
             events.push_back(outEvent);
             int foundTable;
             bool hasFound = false;
@@ -457,7 +457,7 @@ std::shared_ptr<Client> Dispatcher::getClientByName(const std::string& name) con
 }
 
 std::shared_ptr<Client> Dispatcher::addClient(const std::string& name) {
-    std::shared_ptr<Client> currentClient = std::make_shared<Client>(Client(name));
+    std::shared_ptr<Client> currentClient = std::make_shared<Client>(name);
     clients.push_back(currentClient);
 
     return currentClient;
@@ -502,7 +502,8 @@ Time Dispatcher::countTotalTime(const Time& begin, const Time& end) {
 
 std::shared_ptr<SysEvent> Dispatcher::getLastEventOfEnterByClientAndTable(const std::shared_ptr<Client>& currentClient, int table) {
     auto last_event_it = std::find_if(events.rbegin(), events.rend(), [&table](const std::shared_ptr<SysEvent> &e) {
-        bool isFound = (e->getId() == SysEvent::EVENT_4_GONE) || (e->getId() == SysEvent::EVENT_11_KICKED_OUT) || (e->getId() == SysEvent::EVENT_2_CHANGE_SEAT) || (e->getId() == SysEvent::EVENT_12_SIT_DOWN);
+        bool isFound = (e->getId() == SysEvent::EVENT_4_GONE) || (e->getId() == SysEvent::EVENT_11_KICKED_OUT) ||
+                       (e->getId() == SysEvent::EVENT_2_CHANGE_SEAT) || (e->getId() == SysEvent::EVENT_12_SIT_DOWN);
         isFound = isFound && (e->getTable() == table);
         isFound = isFound && !(e->isSpoiled());
         return isFound;
@@ -510,13 +511,15 @@ std::shared_ptr<SysEvent> Dispatcher::getLastEventOfEnterByClientAndTable(const 
 
     if (last_event_it != events.rend()) {
         return *(last_event_it++);
-    }
+    } else
+        return nullptr;
 }
 
 void Dispatcher::recalculateProfit(const std::shared_ptr<Client>& currentClient, const std::shared_ptr<SysEvent>& pEvent, int table) {
     // Когда клиент уходит, находим самый последний евент посадки (правый в списке),
     // и счиатем от него до нынешнего моменты показатели
     auto eventEnter = getLastEventOfEnterByClientAndTable(currentClient, table);
+    if (eventEnter == nullptr) return;
 
     // Получаем время в условных единиц, сколько прошло от и до
     Time t = countTotalTime(*eventEnter->getTime(), *pEvent->getTime());
