@@ -78,7 +78,6 @@ void SysEvent::setTime(const std::shared_ptr<Time> &time) {
     SysEvent::time = time;
 }
 
-
 SysEvent::SysEvent(int id, const std::shared_ptr<Time> &time, const std::string &client) : id(id), time(time), clientName(client) {}
 
 SysEvent::SysEvent(int id, const std::shared_ptr<Time> &time, const std::string &client, int table) : id(id), time(time), clientName(client),

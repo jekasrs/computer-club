@@ -467,7 +467,6 @@ void Dispatcher::removeClient(const std::shared_ptr<Client>& client) {
     clients.remove(client);
 }
 
-
 int Dispatcher::countSum(const Time& time) {
     int coef = time.getHours();
     if (time.getMinutes() != 0) {

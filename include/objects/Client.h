@@ -2,6 +2,8 @@
 #define MY_SYSTEM_CLIENT_H
 
 #include <string>
+#include <memory>
+
 #include "../system/SysEvent.h"
 
 class Client {
@@ -19,7 +21,6 @@ public:
 private:
     const std::string name;
     bool isInHere;
-
 };
 
 #endif

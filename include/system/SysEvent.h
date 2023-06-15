@@ -3,6 +3,7 @@
 
 #include <string>
 #include <ostream>
+#include <memory>
 
 #include "../objects/Time.h"
 
